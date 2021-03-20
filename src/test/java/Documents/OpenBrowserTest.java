@@ -8,10 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-
 public class OpenBrowserTest {
-
-
     @Test
     public void seleniumVersionTest() throws InterruptedException {
         System.setProperty("webdriver.chrome.driver", "src/main/chromedriver.exe");
@@ -38,5 +35,3 @@ public class OpenBrowserTest {
         driver.quit();
     }
 }
-
-
