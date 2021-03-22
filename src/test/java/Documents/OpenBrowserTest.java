@@ -21,18 +21,17 @@ public class OpenBrowserTest {
         download.click();
         String expectedVersion = "3.141.59";
         Thread.sleep(3000);
-        WebElement lastVersion = driver.findElement
-                (By.xpath("//p[text()='Latest stable version ']//a[text()='3.141.59']"));
-        String actualVersion = lastVersion.getText();
+        String actualVersion = driver.findElement
+                (By.xpath("//p[text()='Latest stable version ']//a")).getText();
         Assert.assertEquals(actualVersion, expectedVersion, "Incorrect Selenium Server Version Number");
 
         WebElement searchBox = driver.findElement(By.name("search"));
         searchBox.click();
-        String expectedName = "selenium webdriver";
+        String expectedName = "selenium webdriver".toLowerCase();
         searchBox.sendKeys(expectedName + Keys.ENTER);
         String actualName = driver.findElement
-                (By.xpath("//*[contains(text(),'Selenium WebDriver')]")).getText().toLowerCase();
-        Assert.assertEquals(actualName, expectedName, "No results found for selenium webdriver");
+                (By.xpath("//div[@class='gs-title']//a")).getText().toLowerCase();
+        Assert.assertEquals(actualName, expectedName, "No results found for " + expectedName);
 
         driver.quit();
     }
