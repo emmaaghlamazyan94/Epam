@@ -23,7 +23,7 @@ public class OpenBrowserTest {
         Thread.sleep(3000);
         String actualVersion = driver.findElement
                 (By.xpath("//p[text()='Latest stable version ']//a")).getText();
-        Assert.assertEquals(actualVersion, expectedVersion, "Incorrect Selenium Server Version Number");
+        Assert.assertEquals(actualVersion, expectedVersion, "Incorrect Latest Stable Version Number");
 
         WebElement searchBox = driver.findElement(By.name("search"));
         searchBox.click();
@@ -37,8 +37,8 @@ public class OpenBrowserTest {
                 checkCondition = true;
                 break;
             }
-            Assert.assertTrue(checkCondition, "No results found for " + expectedName);
         }
+        Assert.assertTrue(checkCondition, "No results found for " + expectedName);
         driver.quit();
     }
 }
