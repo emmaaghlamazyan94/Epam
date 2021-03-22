@@ -30,7 +30,7 @@ public class OpenBrowserTest {
         String expectedName = "selenium webdriver".toLowerCase();
         searchBox.sendKeys(expectedName + Keys.ENTER);
         Thread.sleep(3000);
-        List<WebElement> links = driver.findElements(By.xpath("//div[@class = 'gs-title']//a"));
+        List<WebElement> links = driver.findElements(By.xpath("//div[@class = 'gs-title']//a[@target]"));
         boolean checkCondition = false;
         for (WebElement link : links) {
             if (link.getText().toLowerCase().contains(expectedName)) {
