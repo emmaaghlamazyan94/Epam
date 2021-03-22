@@ -1,5 +1,3 @@
-package Documents;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -8,10 +6,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 public class OpenBrowserTest {
     @Test
     public void seleniumVersionTest() throws InterruptedException {
-        System.setProperty("webdriver.chrome.driver", "src/main/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
         WebDriver driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.get("https://www.selenium.dev/");
@@ -29,10 +29,16 @@ public class OpenBrowserTest {
         searchBox.click();
         String expectedName = "selenium webdriver".toLowerCase();
         searchBox.sendKeys(expectedName + Keys.ENTER);
-        String actualName = driver.findElement
-                (By.xpath("//div[@class='gs-title']//a")).getText().toLowerCase();
-        Assert.assertEquals(actualName, expectedName, "No results found for " + expectedName);
-
+        Thread.sleep(3000);
+        List<WebElement> links = driver.findElements(By.xpath("//div[@class = 'gs-title']//a"));
+        boolean checkCondition = false;
+        for (WebElement link : links) {
+            if (link.getText().toLowerCase().contains(expectedName)) {
+                checkCondition = true;
+                break;
+            }
+            Assert.assertTrue(checkCondition, "No results found for " + expectedName);
+        }
         driver.quit();
     }
 }
