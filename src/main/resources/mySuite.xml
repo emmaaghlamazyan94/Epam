@@ -6,11 +6,10 @@
             <class name="GreetzTest">
                 <methods>
                     <include name="loggedInTest"/>
-                    <include name="addFavoriteGift"/>
+                    <include name="addFavoriteGiftTest"/>
                     <include name="giftCardPriceEditGreetzTest"/>
                 </methods>
             </class>
         </classes>
     </test>
 </suite>
-

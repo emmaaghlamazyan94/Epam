@@ -8,8 +8,8 @@ import org.testng.annotations.Test;
 
 public class GreetzTest {
     private WebDriver driver;
-    String email = "register@gmail.com";
-    String password = "asdfghjkl";
+    private String email = "register@gmail.com";
+    private String password = "asdfghjkl";
 
     @BeforeMethod
     public void login() throws InterruptedException {
@@ -29,12 +29,12 @@ public class GreetzTest {
         driver.quit();
     }
 
-    @Test(priority = -1)
+    @Test(priority = 0)
     public void loggedInTest() {
         Assert.assertTrue(isLoggedIn("Harry"), "Failed to log in user " + email);
     }
 
-    @Test(priority = 0)
+    @Test(priority = 1)
     public void addFavoriteGiftTest() throws InterruptedException {
         driver.get("https://www.greetz.nl/ballonnen/denken-aan");
         Thread.sleep(3000);
@@ -74,6 +74,7 @@ public class GreetzTest {
         WebElement amount = driver.findElement(By.name("amount"));
         amount.clear();
         amount.sendKeys("11");
+        Thread.sleep(2000);
         double price = Double.parseDouble(driver.findElement
                 (By.xpath("//div[@class='page-detail__price']//span[@class='price-normal']"))
                 .getText().substring(2).replace(",", "."));
@@ -83,7 +84,6 @@ public class GreetzTest {
         double actualPrice = Double.parseDouble(driver.findElement
                 (By.className("price-total")).getText().substring(9, 15).replace(",", "."));
         Assert.assertEquals(actualPrice, priceMultiply, 0.01);
-        driver.quit();
     }
 
     public boolean isLoggedIn(String firstName) {
