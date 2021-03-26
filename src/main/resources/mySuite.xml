@@ -3,11 +3,9 @@
 <suite name="mySuite" verbose="1">
     <test name="myTest">
         <classes>
-            <class name="GreetzTest">
+            <class name="SixpmTest">
                 <methods>
-                    <include name="loggedInTest"/>
-                    <include name="addFavoriteGiftTest"/>
-                    <include name="giftCardPriceEditGreetzTest"/>
+                    <include name="addProductToShoppingBagTest"/>
                 </methods>
             </class>
         </classes>
