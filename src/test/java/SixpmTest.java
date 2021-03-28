@@ -28,7 +28,7 @@ public class SixpmTest {
 
     @Test
     public void addProductToShoppingBagTest() {
-        wait = new WebDriverWait(driver, 5);
+        wait = new WebDriverWait(driver, 10);
         actions = new Actions(driver);
         random = new Random();
         WebElement accessories = driver.findElement(By.xpath("//div[@class='eb-z']//a[@href='/c/accessories']"));
