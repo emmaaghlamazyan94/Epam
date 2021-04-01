@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,18 +33,18 @@ public class AuthorPage {
         sortBy.click();
         WebElement lowToHigh = driver.findElement(By.id("dropdown1_1"));
         lowToHigh.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated
+                (By.xpath("//div[@class='a-fixed-right-grid-col a-col-left']")));
     }
 
     public boolean sortByPrice() {
-        List<WebElement> prices = driver.findElements(By.xpath("//span[@class='a-price']//span[@aria-hidden='true']"));
-        ArrayList<Float> priceList = new ArrayList();
-        for (int i = 0; i < prices.size(); i = i++) {
-            priceList.add(Float.parseFloat(prices.get(i).getText()));
+        List<WebElement> prices = driver.findElements
+                (By.xpath("//span[@class='a-size-base-plus a-color-price a-text-bold']"));
+        ArrayList<Float> priceList = new ArrayList<>();
+        for (int i = 0; i < prices.size(); i++) {
+            priceList.add(Float.parseFloat(prices.get(i).getText().replaceAll("\\$","")));
         }
-        if (isListSorted(priceList)) {
-            return true;
-        }
-        return false;
+        return isListSorted(priceList);
     }
 
     Boolean isListSorted(ArrayList<Float> data) {

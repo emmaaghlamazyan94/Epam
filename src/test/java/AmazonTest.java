@@ -11,7 +11,7 @@ import pages.HomePage;
 
 public class AmazonTest {
     private WebDriver driver;
-    private String authorFullName = "George R. R. Martin".toLowerCase();
+    private String authorFullName = "george r. r. martin";
 
     @BeforeMethod
     public void testSetup() {
@@ -25,7 +25,7 @@ public class AmazonTest {
     public void deliveryCountryTest() {
         HomePage homePage = new HomePage(driver);
         homePage.waitUntilPageLoads();
-        String expectedDeliveryCountry = "Deliver to Armenia".toLowerCase();
+        String expectedDeliveryCountry = "deliver to armenia";
         String actualDeliveryCountry = driver.findElement(By.id("nav-global-location-slot")).
                 getText().toLowerCase().replaceAll("\\s+", " ");
         Assert.assertEquals(actualDeliveryCountry, expectedDeliveryCountry);
@@ -33,8 +33,8 @@ public class AmazonTest {
 
     @Test
     public void allBooksAreWrittenBySameAuthor() {
-        HomePage search = new HomePage(driver);
-        search.searchAuthorName(authorFullName, "Books");
+        HomePage homePage = new HomePage(driver);
+        homePage.searchAuthorName(authorFullName, "Books");
         BooksPage booksPage = new BooksPage(driver);
         booksPage.waitUntilPageLoads();
         Assert.assertTrue(booksPage.checkAllBooksBySameAuthor(authorFullName));

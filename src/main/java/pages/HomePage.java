@@ -20,13 +20,11 @@ public class HomePage {
     }
 
     public void searchAuthorName(String authorFullName, String section) {
-        WebElement dropDownBox = driver.findElement(By.xpath("//div[@id='nav-search-dropdown-card']"));
-        dropDownBox.click();
         Select select = new Select(driver.findElement(By.name("url")));
         select.selectByVisibleText(section);
         waitUntilPageLoads();
-        WebElement search = driver.findElement(By.id("twotabsearchtextbox"));
-        search.sendKeys(authorFullName + Keys.ENTER);
+        WebElement searchEditBox = driver.findElement(By.id("twotabsearchtextbox"));
+        searchEditBox.sendKeys(authorFullName + Keys.ENTER);
     }
 
     public void waitUntilPageLoads() {
