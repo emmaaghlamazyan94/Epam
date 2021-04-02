@@ -16,23 +16,22 @@ public class BooksPage {
         wait = new WebDriverWait(driver, 20);
     }
 
-    public boolean checkAllBooksBySameAuthor(String authorFullName) {
+    public void clickOnSearchResult() {
         List<WebElement> authors = driver.findElements
-                (By.xpath("//div[@class='sg-col-inner']//div[@class='a-section a-spacing-none']//div[@class='a-row a-size-base a-color-secondary']"));
-        boolean checkCondition = false;
-        for (WebElement author : authors) {
-            if (author.getText().toLowerCase().contains(authorFullName)) {
-                checkCondition = true;
-            } else {
-                return false;
-            }
+                (By.xpath("//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']"));
+        for (WebElement authorLink : authors) {
+            wait.until(ExpectedConditions.elementToBeClickable(authorLink));
+            authorLink.click();
+            break;
         }
-        return checkCondition;
     }
 
     public void waitUntilPageLoads() {
-        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan
-                (By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']"), 0));
-        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.xpath("//span[@class='a-size-medium a-color-base a-text-normal']"), 0));
+        try {
+            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan
+                    (By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']"), 0));
+        } catch (Exception e) {
+            System.out.println("No results found in Books.");
+        }
     }
 }

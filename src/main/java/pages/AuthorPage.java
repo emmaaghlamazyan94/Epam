@@ -18,20 +18,10 @@ public class AuthorPage {
         this.wait = new WebDriverWait(driver, 10);
     }
 
-    public void clickOnSearchResult() {
-        List<WebElement> authors = driver.findElements
-                (By.xpath("//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']"));
-        for (WebElement authorLink : authors) {
-            wait.until(ExpectedConditions.elementToBeClickable(authorLink));
-            authorLink.click();
-            break;
-        }
-    }
-
     public void clickToSort() {
         WebElement sortBy = driver.findElement(By.xpath("//span//span[@class='a-button-text a-declarative']"));
         sortBy.click();
-        WebElement lowToHigh = driver.findElement(By.id("dropdown1_1"));
+        WebElement lowToHigh = driver.findElement(By.linkText("Price: Low to High"));
         lowToHigh.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated
                 (By.xpath("//div[@class='a-fixed-right-grid-col a-col-left']")));
@@ -57,6 +47,6 @@ public class AuthorPage {
     }
 
     public void waitUntilPageLoads() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("booksBySection")));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("booksBySection")));
     }
 }
