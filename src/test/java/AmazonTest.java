@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 import pages.BooksPage;
 import pages.AuthorPage;
 import pages.HomePage;
+
 import java.util.List;
 
 public class AmazonTest {
@@ -28,8 +29,8 @@ public class AmazonTest {
         HomePage homePage = new HomePage(driver);
         homePage.waitUntilPageLoads();
         String expectedDeliveryCountry = "deliver to armenia";
-        String actualDeliveryCountry = driver.findElement(By.id("nav-global-location-slot")).
-                getText().toLowerCase().replaceAll("\\s+", " ");
+        String actualDeliveryCountry = driver.findElement(By.id("nav-global-location-slot"))
+                .getText().toLowerCase().replaceAll("\\s+", " ");
         Assert.assertEquals(actualDeliveryCountry, expectedDeliveryCountry,
                 "The searched text and actual text are not the same");
     }
@@ -47,7 +48,7 @@ public class AmazonTest {
     @Test
     public void confirmSearchedTextExistence() {
         findAndClickOnAuthorBooks();
-        String textToSearch = ("Books by " + authorFullName).toLowerCase();
+        String textToSearch = ("titles by " + authorFullName);
         String actualText = driver.findElement(By.id("formatSelectorHeader")).getText().toLowerCase();
         Assert.assertTrue(actualText.contains(textToSearch),
                 "No results found for " + textToSearch);
