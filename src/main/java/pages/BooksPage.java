@@ -14,15 +14,23 @@ public class BooksPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private final String authors = "//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']";
-
-    @FindBy(xpath = authors)
+    @FindBy(xpath = "//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']")
     private List<WebElement> authorsList;
+
+    @FindBy(id = "formatSelectorHeader")
+    private WebElement actualAuthorName;
+
+    @FindBy(xpath = "//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']")
+    private WebElement books;
 
     public BooksPage(WebDriver driver) {
         this.driver = driver;
         wait = new WebDriverWait(driver, 20);
         PageFactory.initElements(driver, this);
+    }
+
+    public String getActualText() {
+        return actualAuthorName.getText().toLowerCase();
     }
 
     public void clickOnSearchResult() {
@@ -36,7 +44,7 @@ public class BooksPage {
     public void waitUntilPageLoads() {
         try {
             wait.until(ExpectedConditions.numberOfElementsToBeMoreThan
-                    (By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']"), 0));
+                    ((By) books, 0));
         } catch (Exception e) {
             System.out.println("No results found in Books.");
         }

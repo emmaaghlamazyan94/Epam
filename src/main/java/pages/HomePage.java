@@ -1,6 +1,5 @@
 package pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -18,12 +17,25 @@ public class HomePage {
     private WebElement searchEditBox;
 
     @FindBy(name = "url")
-    WebElement selectSection;
+    private WebElement selectSection;
+
+    @FindBy(id = "nav-global-location-slot")
+    private WebElement actualDeliveryCountry;
+
+    @FindBy(id = "nav-belt")
+    private WebElement header;
+
+    @FindBy(id = "nav-search")
+    private WebElement searchSection;
 
     public HomePage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 10);
         PageFactory.initElements(driver, this);
+    }
+
+    public String getActualText() {
+        return actualDeliveryCountry.getText().toLowerCase().replaceAll("\\s+", " ");
     }
 
     public void searchAuthorName(String authorFullName, String section) {
@@ -34,7 +46,7 @@ public class HomePage {
     }
 
     public void waitUntilPageLoads() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-belt")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("nav-search")));
+        wait.until(ExpectedConditions.visibilityOf(header));
+        wait.until(ExpectedConditions.visibilityOf(searchSection));
     }
 }

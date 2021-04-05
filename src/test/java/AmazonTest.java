@@ -1,4 +1,3 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -9,8 +8,6 @@ import org.testng.annotations.Test;
 import pages.BooksPage;
 import pages.AuthorPage;
 import pages.HomePage;
-
-import java.util.List;
 
 public class AmazonTest {
     private WebDriver driver;
@@ -29,14 +26,13 @@ public class AmazonTest {
         HomePage homePage = new HomePage(driver);
         homePage.waitUntilPageLoads();
         String expectedDeliveryCountry = "deliver to armenia";
-        String actualDeliveryCountry = driver.findElement(By.id("nav-global-location-slot"))
-                .getText().toLowerCase().replaceAll("\\s+", " ");
-        Assert.assertEquals(actualDeliveryCountry, expectedDeliveryCountry,
+        String actualDeliveryCountryText = homePage.getActualText();
+        Assert.assertEquals(actualDeliveryCountryText, expectedDeliveryCountry,
                 "The searched text and actual text are not the same");
     }
 
     @Test
-    public void allBooksAreWrittenBySameAuthor() {
+    public void allBooksAreWrittenBySameAuthorTest() {
         HomePage homePage = new HomePage(driver);
         homePage.searchAuthorName(authorFullName, "Books");
         BooksPage booksPage = new BooksPage(driver);
@@ -46,10 +42,11 @@ public class AmazonTest {
     }
 
     @Test
-    public void confirmSearchedTextExistence() {
+    public void confirmSearchedTextExistenceTest() {
         findAndClickOnAuthorBooks();
         String textToSearch = ("titles by " + authorFullName);
-        String actualText = driver.findElement(By.id("formatSelectorHeader")).getText().toLowerCase();
+        BooksPage booksPage = new BooksPage(driver);
+        String actualText = booksPage.getActualText();
         Assert.assertTrue(actualText.contains(textToSearch),
                 "No results found for " + textToSearch);
     }
@@ -64,9 +61,8 @@ public class AmazonTest {
     }
 
     public boolean checkAllBooksBySameAuthor(String authorFullName) {
-        List<WebElement> authors = driver.findElements
-                (By.xpath("//div[@class='a-section a-spacing-none']//div[@class='a-row a-size-base a-color-secondary']"));
-        for (WebElement author : authors) {
+        AuthorPage authorPage = new AuthorPage(driver);
+        for (WebElement author : authorPage.authorsList()) {
             if (!author.getText().toLowerCase().contains(authorFullName)) {
                 return false;
             }
