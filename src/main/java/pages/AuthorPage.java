@@ -6,7 +6,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,18 +28,10 @@ public class AuthorPage {
     @FindBy(id = "booksBySection")
     private WebElement booksByText;
 
-    @FindBy(xpath = "//div[@class='a-section a-spacing-none']//div[@class='a-row a-size-base a-color-secondary']")
-    private List<WebElement> byAuthors;
-
     public AuthorPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, 10);
         PageFactory.initElements(driver, this);
-    }
-
-    public List<WebElement> authorsList() {
-        List<WebElement> authors = byAuthors;
-        return authors;
     }
 
     public void clickToSort() {
