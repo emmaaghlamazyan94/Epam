@@ -1,6 +1,5 @@
 package pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -25,6 +24,9 @@ public class AuthorPage {
 
     @FindBy(xpath = "//span[@class='a-size-base-plus a-color-price a-text-bold']")
     private List<WebElement> prices;
+
+    @FindBy(id = "booksBySection")
+    private WebElement booksByText;
 
     public AuthorPage(WebDriver driver) {
         this.driver = driver;
@@ -56,6 +58,6 @@ public class AuthorPage {
     }
 
     public void waitUntilPageLoads() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("booksBySection")));
+        wait.until(ExpectedConditions.visibilityOf(booksByText));
     }
 }

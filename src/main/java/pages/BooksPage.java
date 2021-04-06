@@ -14,10 +14,16 @@ public class BooksPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private final String authors = "//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']";
+    @FindBy(xpath = "//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']")
+    private List<WebElement> authorNameToClick;
 
-    @FindBy(xpath = authors)
-    private List<WebElement> authorsList;
+    @FindBy(xpath = "//div[@class='a-section a-spacing-none']//div[@class='a-row a-size-base a-color-secondary']")
+    private List<WebElement> authors;
+
+    @FindBy(id = "formatSelectorHeader")
+    private WebElement actualAuthorName;
+
+    private By books = By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']");
 
     public BooksPage(WebDriver driver) {
         this.driver = driver;
@@ -25,20 +31,30 @@ public class BooksPage {
         PageFactory.initElements(driver, this);
     }
 
+    public String getActualText() {
+        return actualAuthorName.getText().toLowerCase();
+    }
+
     public void clickOnSearchResult() {
-        for (WebElement authorLink : authorsList) {
+        for (WebElement authorLink : authorNameToClick) {
             wait.until(ExpectedConditions.elementToBeClickable(authorLink));
             authorLink.click();
             break;
         }
     }
 
-    public void waitUntilPageLoads() {
-        try {
-            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan
-                    (By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']"), 0));
-        } catch (Exception e) {
-            System.out.println("No results found in Books.");
+    public boolean checkAllBooksBySameAuthor(String authorFullName) {
+        List<WebElement> authorsList = authors;
+        for (WebElement author : authorsList) {
+            if (!author.getText().toLowerCase().contains(authorFullName)) {
+                return false;
+            }
         }
+        return true;
+    }
+
+    public void waitUntilPageLoads() {
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan
+                (books, 0));
     }
 }
