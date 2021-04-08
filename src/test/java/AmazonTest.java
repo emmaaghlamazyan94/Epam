@@ -8,16 +8,18 @@ import org.testng.annotations.Test;
 import pages.BooksPage;
 import pages.AuthorPage;
 import pages.HomePage;
+import util.Constant;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AmazonTest {
     private WebDriver driver;
-    private final String filePath = "C:\\Users\\Acer\\Documents\\Epam\\src\\main\\java\\TestData\\TestData.xlsx";
-    private final String sheetName = "Sheet1";
 
     @DataProvider(name = "excelData")
     public Object[][] readExcel() throws IOException {
-        return ExcelReader.readExcel(filePath, sheetName);
+        return ExcelReader.readExcel(Constant.FILE_PATH, Constant.SHEET_NAME);
     }
 
     @BeforeMethod
@@ -44,7 +46,7 @@ public class AmazonTest {
         homePage.searchAuthorName(authorFullName, "Books");
         BooksPage booksPage = new BooksPage(driver);
         booksPage.waitUntilPageLoads();
-        Assert.assertTrue(booksPage.checkAllBooksBySameAuthor(authorFullName),
+        Assert.assertTrue(checkAllBooksBySameAuthor(authorFullName, booksPage.authorsList()),
                 "Not all books are written by the searched author " + authorFullName);
     }
 
@@ -63,7 +65,7 @@ public class AmazonTest {
         findAndClickOnAuthorBooks(authorFullName);
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.clickToSort();
-        Assert.assertTrue(authorPage.sortByPrice(),
+        Assert.assertTrue(isListSorted(authorPage.sortedByPrice()),
                 "Prices are not sorted from low to high");
     }
 
@@ -76,6 +78,24 @@ public class AmazonTest {
         booksPage.clickOnSearchResult();
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.waitUntilPageLoads();
+    }
+
+    public boolean isListSorted(ArrayList<Float> data) {
+        for (int i = 0; i < data.size() - 1; i++) {
+            if (data.get(i) > data.get(i + 1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkAllBooksBySameAuthor(String authorFullName, List<String> authorsList) {
+        for (String author : authorsList) {
+            if (!author.contains(authorFullName)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @AfterMethod

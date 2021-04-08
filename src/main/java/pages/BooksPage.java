@@ -4,15 +4,11 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class BooksPage {
-    private WebDriver driver;
-    private WebDriverWait wait;
+public class BooksPage extends BasePage{
 
     @FindBy(xpath = "//div[@class='a-row a-size-base a-color-secondary']//a[@class='a-size-base a-link-normal']")
     private List<WebElement> authorNameToClick;
@@ -26,9 +22,7 @@ public class BooksPage {
     private By books = By.xpath("//div[@class='s-include-content-margin s-border-bottom s-latency-cf-section']");
 
     public BooksPage(WebDriver driver) {
-        this.driver = driver;
-        wait = new WebDriverWait(driver, 20);
-        PageFactory.initElements(driver, this);
+        super(driver);
     }
 
     public String getActualText() {
@@ -43,14 +37,12 @@ public class BooksPage {
         }
     }
 
-    public boolean checkAllBooksBySameAuthor(String authorFullName) {
-        List<WebElement> authorsList = authors;
-        for (WebElement author : authorsList) {
-            if (!author.getText().toLowerCase().contains(authorFullName)) {
-                return false;
-            }
+    public List<String> authorsList() {
+        List<String> authorListText = new ArrayList<>();
+        for (WebElement author : authors) {
+            authorListText.add(author.getText().toLowerCase());
         }
-        return true;
+        return authorListText;
     }
 
     public void waitUntilPageLoads() {
