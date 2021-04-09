@@ -46,8 +46,14 @@ public class AmazonTest {
         homePage.searchAuthorName(authorFullName, "Books");
         BooksPage booksPage = new BooksPage(driver);
         booksPage.waitUntilPageLoads();
-        Assert.assertTrue(checkAllBooksBySameAuthor(authorFullName, booksPage.authorsList()),
-                "Not all books are written by the searched author " + authorFullName);
+        SoftAssert softAssert = new SoftAssert();
+        for (String author : booksPage.authorsList()) {
+            boolean checkAllBooksBySameAuthor = author.contains(authorFullName);
+            Assert.assertTrue(checkAllBooksBySameAuthor,
+                    "Not all books are written by the searched author " + authorFullName);
+        }
+        softAssert.assertAll();
+
     }
 
     @Test(dataProvider = "excelData")
@@ -66,9 +72,8 @@ public class AmazonTest {
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.clickToSort();
         SoftAssert softAssert = new SoftAssert();
-        boolean isListSorted;
         for (int i = 0; i < authorPage.sortedByPrice().size() - 1; i++) {
-            isListSorted = authorPage.sortedByPrice().get(i) <= authorPage.sortedByPrice().get(i + 1);
+            boolean isListSorted = authorPage.sortedByPrice().get(i) <= authorPage.sortedByPrice().get(i + 1);
             Assert.assertTrue(isListSorted,
                     "Prices are not sorted from low to high");
         }
@@ -84,16 +89,6 @@ public class AmazonTest {
         booksPage.clickOnSearchResult();
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.waitUntilPageLoads();
-    }
-
-
-    public boolean checkAllBooksBySameAuthor(String authorFullName, List<String> authorsList) {
-        for (String author : authorsList) {
-            if (!author.contains(authorFullName)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @AfterMethod
