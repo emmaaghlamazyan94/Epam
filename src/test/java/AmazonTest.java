@@ -5,13 +5,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pages.BooksPage;
 import pages.AuthorPage;
 import pages.HomePage;
 import util.Constant;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AmazonTest {
@@ -65,8 +65,14 @@ public class AmazonTest {
         findAndClickOnAuthorBooks(authorFullName);
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.clickToSort();
-        Assert.assertTrue(isListSorted(authorPage.sortedByPrice()),
-                "Prices are not sorted from low to high");
+        SoftAssert softAssert = new SoftAssert();
+        boolean isListSorted;
+        for (int i = 0; i < authorPage.sortedByPrice().size() - 1; i++) {
+            isListSorted = authorPage.sortedByPrice().get(i) <= authorPage.sortedByPrice().get(i + 1);
+            Assert.assertTrue(isListSorted,
+                    "Prices are not sorted from low to high");
+        }
+        softAssert.assertAll();
     }
 
     public void findAndClickOnAuthorBooks(String authorFullName) {
@@ -80,14 +86,6 @@ public class AmazonTest {
         authorPage.waitUntilPageLoads();
     }
 
-    public boolean isListSorted(ArrayList<Float> data) {
-        for (int i = 0; i < data.size() - 1; i++) {
-            if (data.get(i) > data.get(i + 1)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public boolean checkAllBooksBySameAuthor(String authorFullName, List<String> authorsList) {
         for (String author : authorsList) {
