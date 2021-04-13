@@ -5,19 +5,21 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pages.BooksPage;
 import pages.AuthorPage;
 import pages.HomePage;
+import util.Constant;
+
 import java.io.IOException;
+import java.util.List;
 
 public class AmazonTest {
     private WebDriver driver;
-    private final String filePath = "C:\\Users\\Acer\\Documents\\Epam\\src\\main\\java\\TestData\\TestData.xlsx";
-    private final String sheetName = "Sheet1";
 
     @DataProvider(name = "excelData")
     public Object[][] readExcel() throws IOException {
-        return ExcelReader.readExcel(filePath, sheetName);
+        return ExcelReader.readExcel(Constant.FILE_PATH, Constant.SHEET_NAME);
     }
 
     @BeforeMethod
@@ -44,8 +46,14 @@ public class AmazonTest {
         homePage.searchAuthorName(authorFullName, "Books");
         BooksPage booksPage = new BooksPage(driver);
         booksPage.waitUntilPageLoads();
-        Assert.assertTrue(booksPage.checkAllBooksBySameAuthor(authorFullName),
-                "Not all books are written by the searched author " + authorFullName);
+        SoftAssert softAssert = new SoftAssert();
+        for (String author : booksPage.authorsList()) {
+            boolean checkAllBooksBySameAuthor = author.contains(authorFullName);
+            Assert.assertTrue(checkAllBooksBySameAuthor,
+                    "Not all books are written by the searched author " + authorFullName);
+        }
+        softAssert.assertAll();
+
     }
 
     @Test(dataProvider = "excelData")
@@ -63,8 +71,13 @@ public class AmazonTest {
         findAndClickOnAuthorBooks(authorFullName);
         AuthorPage authorPage = new AuthorPage(driver);
         authorPage.clickToSort();
-        Assert.assertTrue(authorPage.sortByPrice(),
-                "Prices are not sorted from low to high");
+        SoftAssert softAssert = new SoftAssert();
+        for (int i = 0; i < authorPage.sortedByPrice().size() - 1; i++) {
+            boolean isListSorted = authorPage.sortedByPrice().get(i) <= authorPage.sortedByPrice().get(i + 1);
+            Assert.assertTrue(isListSorted,
+                    "Prices are not sorted from low to high");
+        }
+        softAssert.assertAll();
     }
 
     public void findAndClickOnAuthorBooks(String authorFullName) {
