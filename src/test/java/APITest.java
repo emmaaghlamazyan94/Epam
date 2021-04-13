@@ -12,9 +12,8 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 public class APITest {
-    User user = User.getRandomUser();
-    SoftAssert softAssert = new SoftAssert();
-    int userId;
+    private final User user = User.getRandomUser();
+    private String userID;
 
     @BeforeClass
     public void setUp() {
@@ -24,6 +23,7 @@ public class APITest {
 
     @Test
     public void postUser() {
+        SoftAssert softAssert = new SoftAssert();
         ValidatableResponse response = RestAssured
                 .given()
                 .spec(getRequestSpecification())
@@ -33,20 +33,18 @@ public class APITest {
                 .then()
                 .spec(getResponseSpecification());
 
-        userId = response.extract().response().jsonPath().getInt("data.id");
-
-        String name = response.extract().response().jsonPath().getString("data.name");
-        String email = response.extract().response().jsonPath().getString("data.email");
-        String gender = response.extract().response().jsonPath().getString("data.gender");
-        int statusCode = response.extract().response().jsonPath().getInt("code");
+        String name = getUserInfo(response, "data.name");
+        String email = getUserInfo(response, "data.email");
+        String gender = getUserInfo(response, "data.gender");
+        String statusCode = getUserInfo(response, "code");
 
         softAssert.assertEquals(user.getName(), name, "Posted user name is not the same as expected");
         softAssert.assertEquals(user.getEmail(), email, "Posted email is not the same as expected");
         softAssert.assertEquals(user.getGender(), gender, "Gender type is not as expected");
-        softAssert.assertEquals(statusCode, HttpStatus.SC_CREATED, "User is not created");
+        softAssert.assertEquals(Integer.parseInt(statusCode), HttpStatus.SC_CREATED, "User is not created");
         softAssert.assertAll();
 
-        response.extract().response().prettyPrint();
+        userID = getUserInfo(response,"data.id");
     }
 
     @Test(priority = 1)
@@ -55,54 +53,63 @@ public class APITest {
                 .given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("users/" + userId)
+                .get("users/" + userID)
                 .then()
                 .spec(getResponseSpecification());
 
-        int statusCode = response.extract().response().jsonPath().getInt("code");
-        Assert.assertEquals(statusCode, HttpStatus.SC_OK, "User is not found");
-        response.extract().response().prettyPrint();
+        String statusCode = getUserInfo(response, "code");
+        Assert.assertEquals(Integer.parseInt(statusCode), HttpStatus.SC_OK, "User is not found");
     }
 
     @Test(priority = 2)
     public void deleteUser() {
+        SoftAssert softAssert = new SoftAssert();
         ValidatableResponse response = RestAssured
                 .given()
                 .spec(getRequestSpecification())
                 .body(user)
                 .when()
                 .post("users")
-                .then();
-
-        userId = response.extract().response().jsonPath().getInt("data.id");
+                .then()
+                .log()
+                .ifError();
 
         RestAssured
                 .given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("users/" + userId)
-                .then();
+                .get("users/" + getUserInfo(response, "data.id"))
+                .then()
+                .log()
+                .ifError();
+
+        softAssert.assertEquals(getUserInfo(response, "code"), HttpStatus.SC_OK,
+                "No user found");
 
         RestAssured
                 .given()
                 .spec(getRequestSpecification())
                 .when()
-                .delete("users/" + userId)
+                .delete("users/" + getUserInfo(response, "data.id"))
                 .then()
                 .spec(getResponseSpecification());
 
-        int deleteStatusCode = response.extract().response().jsonPath().getInt("code");
+        String deleteStatusCode = getUserInfo(response, "code");
         softAssert.assertEquals(deleteStatusCode, 204);
 
         RestAssured
                 .when()
-                .get("users/" + userId)
+                .get("users/" + getUserInfo(response, "data.id"))
                 .then();
 
-        String actual = response.extract().response().jsonPath().getString("data.message");
-        int statusCode = response.extract().response().jsonPath().getInt("code");
+        String actual = getUserInfo(response, "data.message");
+        String statusCode = getUserInfo(response, "code");
         softAssert.assertEquals(actual, "Resource not found");
         softAssert.assertEquals(statusCode, HttpStatus.SC_NOT_FOUND, "User is not deleted");
+    }
+
+    private String getUserInfo(ValidatableResponse response, String path) {
+        return response.extract().response().jsonPath().getString(path);
     }
 
     private RequestSpecification getRequestSpecification() {
