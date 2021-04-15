@@ -17,35 +17,31 @@ public class User {
         return name;
     }
 
-    public User setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public User setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
-        return this;
     }
 
     public String getStatus() {
         return status;
     }
 
-    public User setStatus(String status) {
+    public void setStatus(String status) {
         this.status = status;
-        return this;
     }
 
     public String getGender() {
         return gender;
     }
 
-    public User setGender(String gender) {
+    public void setGender(String gender) {
         this.gender = gender;
-        return this;
     }
 }
